@@ -14,7 +14,7 @@ const openai = new OpenAIApi(configuration);
  * @param req - Запрос от клиента.
  * @returns - Ответ сервера.
  */
-export async function handlePostRequest(
+export async function POST(
     req: Request
 ) {
     try {
