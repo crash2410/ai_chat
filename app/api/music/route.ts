@@ -1,6 +1,7 @@
 import {auth} from "@clerk/nextjs";
 import {NextResponse} from "next/server";
 import Replicate from "replicate";
+import {checkApiLimit, increaseApiLimit} from "@/lib/api-limit";
 
 const replicate = new Replicate({
     auth: process.env.REPLICATE_API_TOKEN || '',
@@ -35,6 +36,12 @@ export async function POST(
             return new NextResponse("Promt are required", {status: 400});
         }
 
+        const freeTrial = await checkApiLimit();
+
+        if (!freeTrial) {
+            return new NextResponse("Free trial limit exceeded", {status: 403});
+        }
+
 
         // Выполняем запрос к стороннему сервису
         const response = await replicate.run(
@@ -46,7 +53,7 @@ export async function POST(
             }
         );
 
-        console.log(response)
+        await increaseApiLimit();
 
         return NextResponse.json(response);
     } catch (error) {

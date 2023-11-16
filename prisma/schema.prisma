@@ -1,0 +1,35 @@
+//
+//* Конфигурация источника данных для базы данных.
+//* В данном случае, используется провайдер MySQL и URL из переменных окружения.
+//* Режим relationMode установлен в "prisma".
+//* @name db
+//* @type {Object}
+//
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+//
+//* Генератор клиента Prisma.
+//* Используется провайдер "prisma-client-js".
+//* @name client
+//* @type {Object}
+//
+generator client {
+  provider = "prisma-client-js"
+}
+
+//
+//* Модель UserApiLimit, представляющая сущность пользовательского ограничения API.
+//* @name UserApiLimit
+//* @type {Object}
+//
+model UserApiLimit {
+  id        String   @id @default(cuid()) // Уникальный идентификатор записи.
+  userId    String   @unique // Идентификатор пользователя.
+  count     Int      @default(0) // Счетчик ограничения API.
+  createdAt DateTime @default(now()) // Дата и время создания записи.
+  updatedAt DateTime @updatedAt // Дата и время обновления записи.
+}
