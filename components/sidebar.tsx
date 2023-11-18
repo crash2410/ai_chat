@@ -67,7 +67,7 @@ interface SidebarProps {
  * @returns {JSX.Element} компонент боковой панели
  */
 
-const Sidebar = ({apiLimitCount}: SidebarProps) => {
+const Sidebar = ({apiLimitCount = 0}: SidebarProps) => {
     const pathname = usePathname();
 
     return (
