@@ -19,37 +19,49 @@ import {Loader} from "@/components/loader";
 import {cn} from "@/lib/utils";
 import {UserAvatar} from "@/components/user-avatar";
 import {BotAvatar} from "@/components/bot-avatar";
+import {useProModal} from "@/hooks/use-pro-modal";
 
+/**
+ * Компонент страницы для ведения беседы.
+ */
 const ConversationPage = () => {
-    const router = useRouter();
-    const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
+    const proModal = useProModal();  // Инициализация модального окна
+    const router = useRouter();  // Использование роутера Next.js
+    const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);  // Состояние сообщений
 
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
             prompt: ""
         }
-    });
+    }); // Использование формы с помощью react-hook-form
 
-    const isLoading = form.formState.isSubmitting;
 
+    const isLoading = form.formState.isSubmitting; // Состояние загрузки формы
+
+    /**
+     * Обработчик отправки формы.
+     *
+     * @param values - значения формы
+     */
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            const userMessage: ChatCompletionRequestMessage = {role: "user", content: values.prompt};
-            const newMessages = [...messages, userMessage];
+            const userMessage: ChatCompletionRequestMessage = {role: "user", content: values.prompt};  // Создание сообщения пользователя
+            const newMessages = [...messages, userMessage];  // Добавление сообщения пользователя в список сообщений
 
-            const response = await axios.post('/api/conversation', {messages: newMessages});
+            const response = await axios.post('/api/conversation', {messages: newMessages});  // Отправка сообщений на сервер
 
-            setMessages((current) => [...current, userMessage, response.data]);
+            setMessages((current) => [...current, userMessage, response.data]);  // Обновление списка сообщений
 
-            form.reset();
-        } catch (error) {
-            console.log(error);
+            form.reset();  // Сброс формы
+        } catch (error: any) {
+            if (error?.response?.status === 403) {
+                proModal.onOpen();  // Открытие модального окна при ошибке доступа
+            }
         } finally {
-            router.refresh();
+            router.refresh();  // Обновление страницы
         }
     };
-
 
     return (
         <div>

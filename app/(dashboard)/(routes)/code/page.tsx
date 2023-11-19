@@ -20,12 +20,14 @@ import {cn} from "@/lib/utils";
 import {UserAvatar} from "@/components/user-avatar";
 import {BotAvatar} from "@/components/bot-avatar";
 import ReactMarkdown from "react-markdown";
+import {useProModal} from "@/hooks/use-pro-modal";
 
 /**
  * Компонент CodePage.
  * Отвечает за генерацию кода на основе описания.
  */
 const CodePage = () => {
+    const proModal = useProModal();  // Инициализация модального окна
     const router = useRouter();
     const [messages, setMessages] = useState<ChatCompletionRequestMessage[]>([]);
 
@@ -58,8 +60,10 @@ const CodePage = () => {
 
             // Сбрасываем значения формы
             form.reset();
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            if (error?.response?.status === 403) {
+                proModal.onOpen();  // Открытие модального окна при ошибке доступа
+            }
         } finally {
             // Обновляем страницу
             router.refresh();

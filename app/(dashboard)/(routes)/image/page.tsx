@@ -17,6 +17,7 @@ import {Empty} from "@/components/empty";
 import {Loader} from "@/components/loader";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Card, CardFooter} from "@/components/ui/card";
+import {useProModal} from "@/hooks/use-pro-modal";
 
 /**
  * Рендерит компонент ImagePage.
@@ -24,6 +25,7 @@ import {Card, CardFooter} from "@/components/ui/card";
  * @returns {JSX.Element} Рендер компонента ImagePage.
  */
 const ImagePage = () => {
+    const proModal = useProModal();  // Инициализация модального окна
     const router = useRouter();
     const [images, setImages] = useState<string[]>([]);
 
@@ -58,8 +60,10 @@ const ImagePage = () => {
             setImages(urls); // Задаем новые URL-адреса в состоянии images
 
             form.reset(); // Сбрасываем значения формы
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            if (error?.response?.status === 403) {
+                proModal.onOpen();  // Открытие модального окна при ошибке доступа
+            }
         } finally {
             router.refresh(); // Обновляем страницу
         }

@@ -14,11 +14,14 @@ import {Button} from "@/components/ui/button";
 import {useRouter} from "next/navigation";
 import {Empty} from "@/components/empty";
 import {Loader} from "@/components/loader";
+import {useProModal} from "@/hooks/use-pro-modal";
+import {router} from "next/client";
 
 /**
  * Компонент страницы музыкальной генерации.
  */
 const MusicPage = () => {
+    const proModal = useProModal();  // Инициализация модального окна
     const router = useRouter();
     const [music, setMusic] = useState<string>();
 
@@ -45,11 +48,13 @@ const MusicPage = () => {
 
             // Сброс значений формы
             form.reset();
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            if (error?.response?.status === 403) {
+                proModal.onOpen();  // Открытие модального окна при ошибке доступа
+            }
         } finally {
             // Обновление страницы с использованием router
-            router.refresh();
+            router.refresh(); // Обновляем страницу
         }
     };
 
