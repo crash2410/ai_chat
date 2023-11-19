@@ -21,6 +21,7 @@ import {UserAvatar} from "@/components/user-avatar";
 import {BotAvatar} from "@/components/bot-avatar";
 import ReactMarkdown from "react-markdown";
 import {useProModal} from "@/hooks/use-pro-modal";
+import toast from "react-hot-toast";
 
 /**
  * Компонент CodePage.
@@ -63,6 +64,8 @@ const CodePage = () => {
         } catch (error: any) {
             if (error?.response?.status === 403) {
                 proModal.onOpen();  // Открытие модального окна при ошибке доступа
+            } else {
+                toast.error("Something went wrong")
             }
         } finally {
             // Обновляем страницу

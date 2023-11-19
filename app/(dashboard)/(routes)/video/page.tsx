@@ -15,6 +15,7 @@ import {useRouter} from "next/navigation";
 import {Empty} from "@/components/empty";
 import {Loader} from "@/components/loader";
 import {useProModal} from "@/hooks/use-pro-modal";
+import toast from "react-hot-toast";
 
 /**
  * Компонент страницы видео генерации.
@@ -50,6 +51,8 @@ const VideoPage = () => {
         } catch (error:any) {
             if (error?.response?.status === 403) {
                 proModal.onOpen();  // Открытие модального окна при ошибке доступа
+            } else {
+                toast.error("Something went wrong")
             }
         } finally {
             // Обновление страницы с использованием router

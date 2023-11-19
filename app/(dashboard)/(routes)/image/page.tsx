@@ -18,6 +18,7 @@ import {Loader} from "@/components/loader";
 import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue} from "@/components/ui/select";
 import {Card, CardFooter} from "@/components/ui/card";
 import {useProModal} from "@/hooks/use-pro-modal";
+import toast from "react-hot-toast";
 
 /**
  * Рендерит компонент ImagePage.
@@ -63,6 +64,8 @@ const ImagePage = () => {
         } catch (error: any) {
             if (error?.response?.status === 403) {
                 proModal.onOpen();  // Открытие модального окна при ошибке доступа
+            } else {
+                toast.error("Something went wrong")
             }
         } finally {
             router.refresh(); // Обновляем страницу

@@ -16,6 +16,7 @@ import {Empty} from "@/components/empty";
 import {Loader} from "@/components/loader";
 import {useProModal} from "@/hooks/use-pro-modal";
 import {router} from "next/client";
+import toast from "react-hot-toast";
 
 /**
  * Компонент страницы музыкальной генерации.
@@ -51,6 +52,8 @@ const MusicPage = () => {
         } catch (error: any) {
             if (error?.response?.status === 403) {
                 proModal.onOpen();  // Открытие модального окна при ошибке доступа
+            } else {
+                toast.error("Something went wrong")
             }
         } finally {
             // Обновление страницы с использованием router
